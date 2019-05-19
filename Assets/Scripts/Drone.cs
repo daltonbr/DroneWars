@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using FirstImplementation;
-using TMPro;
 using UnityEngine;
 
 public class Drone : MonoBehaviour
@@ -41,8 +39,22 @@ public class Drone : MonoBehaviour
     {
         _laserVisual.transform.position = (Target.position + transform.position) / 2f;
 
-        float distance = Vector3.Distance(Target.position, transform.position);
-        //_laserVisual.transform.localScale = new ...
+        var distance = Vector3.Distance(Target.position, transform.position);
+        _laserVisual.transform.localScale = new Vector3(0.1f, 0.1f, distance);
+        _laserVisual.SetActive(true);
+
+        StartCoroutine(TurnOffLaser());
+    }
+
+    private IEnumerator TurnOffLaser()
+    {
+        yield return new WaitForSeconds(0.25f);
+        _laserVisual.SetActive(false);
+
+        if (Target != null)
+        {
+            Destroy(Target.gameObject);
+        }
     }
 
 }

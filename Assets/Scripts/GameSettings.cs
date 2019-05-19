@@ -1,18 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameSettings : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private float droneSpeed = 2f;
+    public static float DroneSpeed => Instance.droneSpeed;
+    
+    [SerializeField] private float aggroRadius;
+    public static float AggroRadius => Instance.aggroRadius;
+    
+    [SerializeField] private float attackRange;
+    public static float AttackRange => Instance.attackRange;
+    
+    [SerializeField] private GameObject droneProjectilePrefab;
+    public GameObject DroneProjectilePrefab => Instance.droneProjectilePrefab;
 
-    // Update is called once per frame
-    void Update()
+    public static GameSettings Instance { get; private set; }
+
+    private void Awake()
     {
-        
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 }

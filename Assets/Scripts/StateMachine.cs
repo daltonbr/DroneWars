@@ -1,17 +1,42 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class StateMachine : MonoBehaviour
 {
-    private void Start()
-    {
-        
-    }
+    private Dictionary<Type, BaseState> _availableStates;
+
+    public BaseState CurrentState { get; private set; }
+    public event Action<BaseState> OnStateChanged;
     
+
     public void SetStates(Dictionary<Type, BaseState> states)
     {
-        throw new NotImplementedException();
+        _availableStates = states;
+    }
+
+    private void Update()
+    {
+        if (CurrentState == null)
+        {
+            //TODO: dictionaries doesn't have a guaranteed order
+            CurrentState = _availableStates.Values.First();
+        }
+
+        var nextState = CurrentState?.Tick();
+
+        if (nextState != null &&
+            nextState != CurrentState?.GetType())
+        {
+            SwitchToNewState(nextState);
+        }
+    }
+
+    private void SwitchToNewState(Type nextState)
+    {
+        CurrentState = _availableStates[nextState];
+        OnStateChanged?.Invoke(CurrentState);
     }
 }
